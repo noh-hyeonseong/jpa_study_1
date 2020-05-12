@@ -29,11 +29,12 @@ public class MemberController {
 
     @PostMapping(value = "/members/new")
     public String create(@Valid MemberForm form, BindingResult result) {
-        if (result.hasErrors()) {
+
+        if (result.hasErrors()) {       //BindingResult 을 써서 에러를 받아서 별도의 페이지로 처리
             return "members/createMemberForm";
         }
-        Address address = new Address(form.getCity(), form.getStreet(),
-                form.getZipcode());
+
+        Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
         Member member = new Member();
         member.setName(form.getName());
         member.setAddress(address);
