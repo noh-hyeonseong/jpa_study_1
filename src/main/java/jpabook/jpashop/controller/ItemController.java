@@ -22,7 +22,7 @@ public class ItemController {
 
     @PostMapping("/items/new")
     public String create(BookForm form){
-        
+
         Book book = new Book();
         book.setName(form.getName());
         book.setPrice(form.getPrice());
