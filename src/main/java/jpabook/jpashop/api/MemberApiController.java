@@ -12,7 +12,41 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class MemberApiController {
+
     private final MemberService memberService;
+
+    /*
+    원하지 않는 도메인에 포함된 다른 속성값도 전달하는 문제.
+    엔티티를 직접 노출 문제 -> 제이슨이그노어로 막을 수 있지만 api를 이용하는 다른 곳에서는 이 속성을 원할 수 있음
+     */
+    @GetMapping("/api/v1/members")
+   public List<Member> memberV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result memberV2() {
+        List<Member> findMembers = memberService.findMembers();
+        List<MemberDto> collect = findMembers.stream()
+                .map(m->new MemberDto(m.getName()))
+                .collect(Collectors.toList());
+
+        return new Result(collect.size(),collect);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        private int count;
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto{
+        private String name;
+    }
+
     /**
      * 등록 V1: 요청 값으로 Member 엔티티를 직접 받는다.
      * 문제점
