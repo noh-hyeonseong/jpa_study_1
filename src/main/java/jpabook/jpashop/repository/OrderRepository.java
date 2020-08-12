@@ -11,13 +11,17 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class OrderRepository {
+
     private final EntityManager em;
+
     public void save(Order order) {
         em.persist(order);
     }
+
     public Order findOne(Long id) {
         return em.find(Order.class, id);
     }
+
     public List<Order> findAllByString(OrderSearch orderSearch) {
         //language=JPAQL
         String jpql = "select o From Order o join o.member m";
@@ -51,5 +55,14 @@ public class OrderRepository {
             query = query.setParameter("name", orderSearch.getMemberName());
         }
         return query.getResultList();
+    }
+
+    //OrderRepository 추가 코드
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .getResultList();
     }
 }
